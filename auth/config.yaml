@@ -5,26 +5,24 @@ preferences: {}
 current-context: whole-company-creds
 
 contexts:
-  - context:
-    name: vault-company-name
-      backend: vault
-  - context:
-    name: whole-company-creds
-      backend:
+  - name: vault-company-name
+    backend:
+      - vault
+  - name: whole-company-creds
+    backend:
       - vault
       - gitlab
 
 backends:
   - name: vault
-  #  type: vault
     address: http://127.0.0.1:8200
-    auth: 
+    auth:
       env: VAULT_DEV_ROOT_TOKEN_ID
 
   - name: gitlab
-    # type: gitlab
     address: https://gitlab.company.com
     auth:
+      env: TOKEN_FOR_EXAMPLE
       exec:
         command: op
         args: ["read", "op://vault/prod-token/credential"]

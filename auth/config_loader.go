@@ -1,5 +1,9 @@
 package auth
 
-// "fmt"
 // "os"
-// "gopkg.in/yaml.v3"
+
+// func (c *Config) ConfigLoader(configPath string) (cfg Config) {
+
+// 	// os.Getenv()
+// 	// os.getFil
+// }

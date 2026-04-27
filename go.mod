@@ -1,4 +1,4 @@
-module github.com/nikitoxic/secretctl
+module github.com/nikit0xic/secretctl
 
 go 1.22.0
 
@@ -15,4 +15,5 @@ require (
 	github.com/spf13/pflag v1.0.10 // indirect
 	golang.org/x/sys v0.4.0 // indirect
 	golang.org/x/time v0.0.0-20220922220347-f3bd1da661af // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

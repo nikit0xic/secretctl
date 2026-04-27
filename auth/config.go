@@ -5,21 +5,19 @@ import (
 )
 
 type Config struct {
-	CurrentContext string `yaml:"current-context"`
-
-	Contexts []Context `yaml:"contexts"`
-	Backends []Backend `yaml:"backends"`
+	CurrentContext string    `yaml:"current-context"`
+	Contexts       []Context `yaml:"contexts"`
+	Backends       []Backend `yaml:"backends"`
 }
 
 type Context struct {
-	Name    string  `yaml:"name"`
-	Backend Backend `yaml:"backend"`
+	Name    string   `yaml:"name"`
+	Backend []string `yaml:"backend"`
 }
 
 // TODO: Type typeOfBackend: aws, vault, gitlab ...
 type Backend struct {
-	Name string `yaml:"name"`
-	// Type    string
+	Name    string `yaml:"name"`
 	Address string `yaml:"address"`
 	Auth    Auth   `yaml:"auth"`
 }
