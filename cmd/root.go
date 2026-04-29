@@ -2,11 +2,8 @@ package cmd
 
 import (
 	"fmt"
-	"log"
-	"os"
 
 	"github.com/spf13/cobra"
-	"gopkg.in/yaml.v3"
 
 	"github.com/nikit0xic/secretctl/auth"
 )
@@ -21,26 +18,13 @@ var RootCmd = &cobra.Command{
 	Short:   "A tool for secret management for platforms such as Vault, GitLab etc.",
 
 	Args: cobra.ArbitraryArgs,
-	Run:  runTextFormatter,
+	Run:  runSecretctlCmd,
 }
 
 func init() {
-	RootCmd.Flags().BoolVarP(&uppercase, "upper", "u", false, "Convert text to uppercase")
+	RootCmd.Flags().BoolVarP(&uppercase, "env", "e", false, "Env from flag")
 }
 
-func runTextFormatter(cmd *cobra.Command, args []string) {
-	var configFilePath string = "/Users/nikitaterehov/PyCharmProjects/opensource/secretctl/auth/config.yaml"
-
-	data, err := os.ReadFile(configFilePath)
-
-	if err != nil {
-		fmt.Println("Read error: %v", err)
-	}
-
-	cfg := auth.Config{}
-	err = yaml.Unmarshal(data, &cfg)
-	if err != nil {
-		log.Fatalf("error: %v", err)
-	}
-	fmt.Printf("Config struct:\n%v\n\n", cfg)
+func runSecretctlCmd(cmd *cobra.Command, args []string) {
+	fmt.Println(auth.LoadConfig(""))
 }
