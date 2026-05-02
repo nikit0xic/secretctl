@@ -9,3 +9,4 @@ services:
       - VAULT_ADDR=http://127.0.0.1:8200
     cap_add:
       - IPC_LOCK
+      - SETFCAP # for podman

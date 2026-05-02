@@ -17,7 +17,8 @@ backends:
   - name: vault
     address: http://127.0.0.1:8200
     auth:
-      env: VAULT_DEV_ROOT_TOKEN_ID
+      env: VAULT_TOKEN
+      # env: VAULT_DEV_ROOT_TOKEN_ID
 
   - name: gitlab
     address: https://gitlab.company.com

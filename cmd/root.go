@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"os/exec"
 
 	"github.com/spf13/cobra"
 
@@ -26,5 +27,19 @@ func init() {
 }
 
 func runSecretctlCmd(cmd *cobra.Command, args []string) {
-	fmt.Println(auth.LoadConfig(""))
+	cfg, _ := auth.LoadConfig("")
+	backs := cfg.Backends
+
+	for i, _ := range backs {
+		if backs[i].Name == "vault" {
+			vault_exec := exec.Command("vault", "kv", "list", "/secret")
+			out, err := vault_exec.CombinedOutput()
+			if err != nil {
+				fmt.Errorf("Error: ", err)
+			}
+			fmt.Println(string(out))
+		}
+		fmt.Println("the 'back of' i:", i, "is: ", backs[i])
+	}
+
 }
