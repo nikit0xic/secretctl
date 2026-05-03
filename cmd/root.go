@@ -28,18 +28,27 @@ func init() {
 
 func runSecretctlCmd(cmd *cobra.Command, args []string) {
 	cfg, _ := auth.LoadConfig("")
-	backs := cfg.Backends
+	CurCtx := cfg.CurrentContext
+	var Ctx auth.Context
+	for _, v := range cfg.Contexts {
+		if v.Name == CurCtx {
+			Ctx = v
+		}
+	}
 
-	for i, _ := range backs {
-		if backs[i].Name == "vault" {
+	backs := Ctx.Backends
+
+	fmt.Println("Current context:", cfg.CurrentContext)
+	for i, v := range backs {
+		if v == "vault" {
 			vault_exec := exec.Command("vault", "kv", "list", "/secret")
 			out, err := vault_exec.CombinedOutput()
 			if err != nil {
 				fmt.Errorf("Error: ", err)
 			}
-			fmt.Println(string(out))
+			defer fmt.Println(string(out))
 		}
-		fmt.Println("the 'back of' i:", i, "is: ", backs[i])
+		fmt.Println("Backend #", i, "is: ", backs[i])
 	}
 
 }

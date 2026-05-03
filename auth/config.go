@@ -11,8 +11,8 @@ type Config struct {
 }
 
 type Context struct {
-	Name    string   `yaml:"name"`
-	Backend []string `yaml:"backend"`
+	Name     string   `yaml:"name"`
+	Backends []string `yaml:"backend"`
 }
 
 // TODO: Type typeOfBackend: aws, vault, gitlab ...

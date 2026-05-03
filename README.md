@@ -17,4 +17,8 @@ cd /secretctl
 go build .
 go run ./main.go
 
+# or 
+nano ~/.zshrc
+alias secretctl="path/to/secretctl"
+
 ```
