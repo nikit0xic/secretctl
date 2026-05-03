@@ -7,20 +7,22 @@ current-context: whole-company-creds
 contexts:
   - name: vault-company-name
     backend:
-      - vault
+      - v1
   - name: whole-company-creds
     backend:
-      - vault
-      - gitlab
+      - v1
+      - g1
 
 backends:
-  - name: vault
+  - name: v1
+    type: vault
     address: http://127.0.0.1:8200
     auth:
       env: VAULT_TOKEN
       # env: VAULT_DEV_ROOT_TOKEN_ID
 
-  - name: gitlab
+  - name: g1
+    type: gitlab
     address: https://gitlab.company.com
     auth:
       env: TOKEN_FOR_EXAMPLE

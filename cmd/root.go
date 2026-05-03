@@ -2,11 +2,12 @@ package cmd
 
 import (
 	"fmt"
-	"os/exec"
 
 	"github.com/spf13/cobra"
 
 	"github.com/nikit0xic/secretctl/auth"
+	"github.com/nikit0xic/secretctl/gitlab"
+	"github.com/nikit0xic/secretctl/vault"
 )
 
 var (
@@ -28,27 +29,26 @@ func init() {
 
 func runSecretctlCmd(cmd *cobra.Command, args []string) {
 	cfg, _ := auth.LoadConfig("")
-	CurCtx := cfg.CurrentContext
-	var Ctx auth.Context
-	for _, v := range cfg.Contexts {
-		if v.Name == CurCtx {
-			Ctx = v
-		}
-	}
 
-	backs := Ctx.Backends
+	Backends, error := cfg.GetBackendsForContext(cfg.CurrentContext)
+
+	if error != nil {
+		fmt.Print("Error: ", error)
+	}
 
 	fmt.Println("Current context:", cfg.CurrentContext)
-	for i, v := range backs {
-		if v == "vault" {
-			vault_exec := exec.Command("vault", "kv", "list", "/secret")
-			out, err := vault_exec.CombinedOutput()
-			if err != nil {
-				fmt.Errorf("Error: ", err)
-			}
-			defer fmt.Println(string(out))
-		}
-		fmt.Println("Backend #", i, "is: ", backs[i])
-	}
 
+	for i := range Backends {
+		switch Backends[i].Type {
+		case "vault":
+			vault.ConnectVaultBackend()
+		case "gitlab":
+			gitlab.ConnectGitlabBackend()
+		default:
+			fmt.Println("Your contexts backends not supported yet!")
+		}
+	}
+	for i, _ := range Backends {
+		fmt.Println("Backend #", i, "is: ", Backends[i])
+	}
 }

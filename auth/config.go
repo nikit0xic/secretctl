@@ -15,9 +15,9 @@ type Context struct {
 	Backends []string `yaml:"backend"`
 }
 
-// TODO: Type typeOfBackend: aws, vault, gitlab ...
 type Backend struct {
 	Name    string `yaml:"name"`
+	Type    string `yaml:"type"`
 	Address string `yaml:"address"`
 	Auth    Auth   `yaml:"auth"`
 }
@@ -32,8 +32,27 @@ type ExecAuth struct {
 	Args    []string `yaml:"args"`
 }
 
-func (B Backend) PrintBackend() {
-	fmt.Println(B.Name)
-	fmt.Println(B.Address)
-	fmt.Println(B.Auth)
+func (cfg *Config) GetBackendsForContext(contextName string) ([]Backend, error) {
+	var ctx *Context
+	for _, v := range cfg.Contexts {
+		if v.Name == contextName {
+			ctx = &v
+		}
+	}
+
+	if ctx == nil {
+		return nil, fmt.Errorf("context '%s' not found", contextName)
+	}
+
+	var backs []Backend
+
+	for _, backendName := range ctx.Backends {
+		for _, b := range cfg.Backends {
+			if backendName == b.Name {
+				backs = append(backs, b)
+			}
+		}
+	}
+
+	return backs, nil
 }
