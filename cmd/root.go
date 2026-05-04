@@ -10,10 +10,6 @@ import (
 	"github.com/nikit0xic/secretctl/vault"
 )
 
-var (
-	uppercase bool
-)
-
 var RootCmd = &cobra.Command{
 	Use:     "secretctl",
 	Aliases: []string{"sectl"},
@@ -24,7 +20,7 @@ var RootCmd = &cobra.Command{
 }
 
 func init() {
-	RootCmd.Flags().BoolVarP(&uppercase, "env", "e", false, "Env from flag")
+	RootCmd.AddCommand(getCmd)
 }
 
 func runSecretctlCmd(cmd *cobra.Command, args []string) {
@@ -41,7 +37,7 @@ func runSecretctlCmd(cmd *cobra.Command, args []string) {
 	for i := range Backends {
 		switch Backends[i].Type {
 		case "vault":
-			vault.ConnectVaultBackend()
+			vault.ConnectVaultBackend(Backends[i])
 		case "gitlab":
 			gitlab.ConnectGitlabBackend()
 		default:
