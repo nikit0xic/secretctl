@@ -54,5 +54,5 @@ backends:
 ```shell
 cd /secretctl
 go build .
-go run ./main.go
+secretctl list
 ```
