@@ -24,16 +24,24 @@ func runListCmd(cmd *cobra.Command, args []string) {
 		return
 	}
 
-	b, err := cfg.GetBackendsForContext(cfg.CurrentContext)
+	backends, err := cfg.GetBackendsForContext(cfg.CurrentContext)
 	if err != nil {
 		fmt.Println("Error:", err)
 		return
 	}
 
-	for i := range b {
-		switch b[i].Type {
+	for i := range backends {
+		switch backends[i].Type {
 		case "vault":
-			vault.GetList(b[i], args)
+			payload, err := vault.GetList(backends[i], args)
+			if err != nil {
+				fmt.Print("Error: ", err)
+				continue
+			}
+			fmt.Printf("=== Backend: %s ===\n", backends[i].Address)
+			for _, p := range payload {
+				fmt.Println(p)
+			}
 		case "gitlab":
 			fmt.Println("You've triggeed gitlab list command. Yet this command is not complete for use.")
 		default:

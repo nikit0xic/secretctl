@@ -10,7 +10,7 @@ export VAULT_TOKEN='dev-root-token'
 nano ~/.zshrc
 alias secretctl="path/to/secretctl"
 
-nano ~/secretctl/config.yaml
+nano ~/.secretctl/config.yaml
 # add your backends and it's access vars
 ```
 
@@ -46,6 +46,29 @@ backends:
       exec:
         command: op
         args: ["read", "op://vault/prod-token/credential"]
+```
+
+
+```shell
+vault kv put -address='http://localhost:8200' /secret/dev/back/app1 db_pass='123secret!'
+vault kv put -address='http://localhost:8200' /secret/dev/back/app2 db_pass='123someanothersecret!'
+
+vault kv list -address='http://localhost:8200' /secret/dev/back/
+
+vault kv get -address='http://localhost:8200' /secret # Example of vault behaivour
+vault kv list -address='http://localhost:8200' /secret
+
+
+secretctl
+secretctl get /secret/dev/back/app1
+secretctl get /secret/dev/back/app2
+# analougue of:
+vault kv get -address='http://localhost:8200' /secret/dev/back/app1
+vault kv get -address='http://localhost:8200' /secret/dev/back/app2
+
+secretctl list /secret/dev
+secretctl graph /secret/dev -L 3
+
 ```
 
 ---

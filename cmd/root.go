@@ -10,10 +10,6 @@ import (
 	"github.com/nikit0xic/secretctl/vault"
 )
 
-// var (
-// 	graphDepthLvl int
-// )
-
 var RootCmd = &cobra.Command{
 	Use:     "secretctl",
 	Aliases: []string{"sectl"},
@@ -27,13 +23,13 @@ func init() {
 	RootCmd.AddCommand(getCmd)
 	RootCmd.AddCommand(listCmd)
 
-	// graphCmd.Flags().IntVarP(
-	// 	&graphDepthLvl,
-	// 	"level",
-	// 	"L",
-	// 	0,
-	// 	"maximum depth level of grapgh command",
-	// )
+	graphCmd.Flags().IntP(
+		"level",
+		"L",
+		-1,
+		"Depth level, -1 means unlimited",
+	)
+	RootCmd.AddCommand(graphCmd)
 }
 
 func runSecretctlCmd(cmd *cobra.Command, args []string) {

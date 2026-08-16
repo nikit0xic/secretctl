@@ -2,6 +2,7 @@ package vault
 
 import (
 	"fmt"
+	// "go/printer"
 	"os/exec"
 	"strings"
 	"sync"
@@ -17,7 +18,7 @@ const (
 	leaf_connector       = '└'
 )
 
-type SafeListed struct {
+type SafeVisited struct {
 	mu      sync.Mutex
 	backend auth.Backend
 	visited map[string]bool
@@ -25,6 +26,13 @@ type SafeListed struct {
 
 type Fetcher interface {
 	List(b auth.Backend, path string) (s []string, err error)
+}
+
+func NewSafeVisited(b auth.Backend) *SafeVisited {
+	return &SafeVisited{
+		backend: b,
+		visited: map[string]bool{},
+	}
 }
 
 func ConnectVaultBackend(b auth.Backend) {
@@ -49,9 +57,44 @@ func GetCmd(b auth.Backend, args []string) {
 	}
 }
 
-func Graph(path string, depth int, fe Fetcher, sl *SafeListed) {
-	// get a list of current level
-	// if list has dirs (ends with '/') - then execute recursion
+func GetGraph(backend auth.Backend, path string, depth int, currentDepth int, sv *SafeVisited, wg *sync.WaitGroup) {
+	defer wg.Done()
+
+	sv.mu.Lock()
+	if sv.visited[path] {
+		sv.mu.Unlock()
+		return
+	}
+
+	if depth != -1 && currentDepth >= depth {
+		return
+	}
+
+	sv.visited[path] = true
+	sv.mu.Unlock()
+
+	entries, err := GetList(backend, []string{path})
+	if err != nil {
+		return
+	}
+
+	for i, entry := range entries {
+		indent := strings.Repeat("  ", currentDepth)
+		isLast := i == len(entries)-1
+		connector := string(branch_connector)
+
+		if isLast {
+			connector = string(leaf_connector)
+		}
+
+		fmt.Println(indent + connector + "── " + entry)
+
+		if strings.HasSuffix(entry, "/") {
+			wg.Add(1)
+			go GetGraph(backend, path+entry, depth, currentDepth+1, sv, wg)
+		}
+	}
+
 }
 
 func GetList(b auth.Backend, args []string) ([]string, error) {
@@ -80,8 +123,4 @@ func GetList(b auth.Backend, args []string) ([]string, error) {
 	}
 
 	return payload, nil
-}
-
-func NewFetcher(b auth.Backend) *SafeListed {
-	return &SafeListed{backend: b}
 }
