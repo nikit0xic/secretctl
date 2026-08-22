@@ -52,6 +52,9 @@ backends:
 ```shell
 vault kv put -address='http://localhost:8200' /secret/dev/back/app1 db_pass='123secret!'
 vault kv put -address='http://localhost:8200' /secret/dev/back/app2 db_pass='123someanothersecret!'
+vault kv put -address='http://localhost:8200' /secret/test/back/app1 db_pass='312?'
+vault kv put -address='http://localhost:8200' /secret/test/back/app2 ci_pass='3342rg?'
+vault kv put -address='http://localhost:8200' /secret/test/service_accounts/app0 token='oa[jn30jf30ef?'
 
 vault kv list -address='http://localhost:8200' /secret/dev/back/
 
